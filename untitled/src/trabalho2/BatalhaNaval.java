@@ -15,7 +15,7 @@ public class BatalhaNaval {
     private int[] tamanhosDeNavio;
     private boolean modoAutomatico = false;
 
-    public BatalhaNaval() {
+    public BatalhaNaval() { // metodo contrutor
         this.computador = new Computador();
         this.humano = new Jogador();
         tamanhosDeNavio = new int[]{2, 3, 5, 7};
@@ -26,11 +26,13 @@ public class BatalhaNaval {
 
         // Inicializa o jogador automático (computador)
         ((Computador) jogo.computador).lerArquivoEProcessar("computador.txt");
-        jogo.getComputador().imprimirTabuleiro();
+        // jogo.getComputador().imprimirTabuleiro();
+
+// @todo pergunta se é automático
 
         // Inicializa o jogador humano
         jogo.inicializarTabuleiroHumano(jogo.modoAutomatico);
-        jogo.getHumano().imprimirTabuleiro();
+        // jogo.getHumano().imprimirTabuleiro();
 
         // Par ou Impar (decide quem começa)
         int numeroAleatorio = new Random().nextInt(10);
@@ -43,9 +45,15 @@ public class BatalhaNaval {
 
     private void inicializarTabuleiroHumano(boolean modoAutomatico) {
         if (!modoAutomatico) {
-            while (humano.getPedacosRestantesNavios() < computador.getPedacosRestantesNavios()) {
-                humano.imprimirTabuleiro();// perguntar para a brenda se pode mostrar aqui o tabuleiro no momento de inserir navios
-                insereNavioManualmente();
+            while (humano.getPedacosRestantesNavios() < computador.getPedacosRestantesNavios()) { // enquanto o humano tiver menos peça que o computador, o humano precisa inserir peças
+                humano.imprimirTabuleiro();// perguntar para a brenda se pode mostrar aqui o tabuleiro no
+                // momento de inserir navios
+                try {
+                    insereNavioManualmente();
+                } catch (IllegalArgumentException execao){
+                    String mensagemDeErro = execao.getLocalizedMessage();
+                    System.out.println("Aconteceu o seguinte erro: " + mensagemDeErro);
+                }
             }
         } else {
             while (humano.getPedacosRestantesNavios() < computador.getPedacosRestantesNavios()) {
@@ -84,18 +92,39 @@ public class BatalhaNaval {
         String mensagem = "Informe as coordenadas iniciais do seu navio:";
         Coordenada coordenadasIniciais = solicitaCoordenadasUsuario(humano, mensagem);
 
-        // Solicita coordenadas finais
-        mensagem = "Informe as coordenadas finais do seu navio:";
-        Coordenada coordenadasFinais = solicitaCoordenadasUsuario(humano, mensagem);
+        // Solicita coordenadas finais (@TODO: TRATAR TAMANHO DO NAVIO)
 
-        if (!humano.adicionarNavio(new Navio(coordenadasIniciais, coordenadasFinais)) &&
-                humano.getPedacosRestantesNavios() < computador.getPedacosRestantesNavios()) {
-            throw new IllegalArgumentException("O limite de navios foi atingido mas o computador possui mais peças que o usuário.");
-        } else if (humano.getPedacosRestantesNavios() > computador.getPedacosRestantesNavios()) {
-            throw new IllegalArgumentException("O usuário possui mais peças do que o computador.");
+
+        boolean valido = false;
+        while (!valido) {
+            mensagem = "Informe as coordenadas finais do seu navio:";
+            Coordenada coordenadasFinais = solicitaCoordenadasUsuario(humano, mensagem);
+            Navio navio = new Navio(coordenadasIniciais, coordenadasFinais);
+
+            int tamanhohorizontal = coordenadasFinais.getX() - coordenadasIniciais.getX();
+            int tamanhovertical = coordenadasFinais.getY() - coordenadasIniciais.getY();
+
+
+            for (int i = 0; i < tamanhosDeNavio.length; i++) ;
+            {
+                if (valido = true) {
+                } else {
+                    System.out.println("O tamanho do navio não corresponde a um tamanho válido");
+                }
+            }
+
+            // checagens
+            boolean adicionouNavio = humano.adicionarNavio(navio);
+            boolean faltaHumanoAdicionar = humano.getPedacosRestantesNavios() < computador.getPedacosRestantesNavios();
+            boolean adicionouDemais = humano.getPedacosRestantesNavios() > computador.getPedacosRestantesNavios();
+
+            if (!adicionouNavio && faltaHumanoAdicionar) {
+                throw new IllegalArgumentException("O limite de navios foi atingido mas o computador possui mais peças que o usuário.");
+            } else if (adicionouDemais) {
+                throw new IllegalArgumentException("O usuário possui mais peças do que o computador.");
+            }
         }
     }
-
     private void comecaBatalha(Jogador atirador, Jogador alvo) {
         Coordenada coordenadaTiro;
         while (atirador.getTabuleiro().restamNavios() && alvo.getTabuleiro().restamNavios()) {
@@ -119,8 +148,8 @@ public class BatalhaNaval {
             alvo = aux;
         }
         System.out.println("Fim de jogo! ");
-        if (atirador.getTabuleiro().restamNavios()){
-            if (atirador instanceof Computador){
+        if (atirador.getTabuleiro().restamNavios()) {
+            if (atirador instanceof Computador) {
                 System.out.println("Você perdeu!");
             } else {
                 System.out.println("Parabéns, você ganhou!");
