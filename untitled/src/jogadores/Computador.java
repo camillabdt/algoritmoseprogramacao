@@ -34,6 +34,7 @@ public class Computador extends Jogador {
             // Lê as coordenadas dos navios enquanto houverem linhas que não estejam vazias (empty)
             frota = lerPosicoesNavios(br);
 
+
             // Posiciona a frota de navios no tabuleiro
             posicionaNavios(frota);
 

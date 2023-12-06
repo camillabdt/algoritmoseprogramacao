@@ -13,7 +13,7 @@ public class BatalhaNaval {
     Jogador humano;
 
     private int[] tamanhosDeNavio;
-    private boolean modoAutomatico = false;
+    public static boolean modoAutomatico = false;
 
     public BatalhaNaval() { // metodo contrutor
         this.computador = new Computador();
@@ -23,12 +23,26 @@ public class BatalhaNaval {
 
     public static void main(String[] args) {
         BatalhaNaval jogo = new BatalhaNaval();
+        Scanner scanner = new Scanner(System.in);
+        int escolha;
 
         // Inicializa o jogador automático (computador)
         ((Computador) jogo.computador).lerArquivoEProcessar("computador.txt");
         // jogo.getComputador().imprimirTabuleiro();
 
-// @todo pergunta se é automático
+        System.out.println("Escolha o seu modo de jogo:");
+        System.out.println("1. Automático");
+        System.out.println("2. Manual");
+        escolha = scanner.nextInt();
+// tem que colocar o public e void para rolar né
+        if (escolha == 1) {
+            modoAutomatico();
+        } else if (escolha == 2) {
+            Manualmente(scanner);
+        } else {
+            System.out.println("Escolha inválida");
+
+        }
 
         // Inicializa o jogador humano
         jogo.inicializarTabuleiroHumano(jogo.modoAutomatico);
@@ -42,6 +56,7 @@ public class BatalhaNaval {
             jogo.comecaBatalha(jogo.humano, jogo.computador);
         }
     }
+
 
     private void inicializarTabuleiroHumano(boolean modoAutomatico) {
         if (!modoAutomatico) {
@@ -87,7 +102,7 @@ public class BatalhaNaval {
         return coordenadasFinais;
     }
 
-    private void insereNavioManualmente() {
+    public void insereNavioManualmente() {
         // Solicita coordenadas iniciais
         String mensagem = "Informe as coordenadas iniciais do seu navio:";
         Coordenada coordenadasIniciais = solicitaCoordenadasUsuario(humano, mensagem);
