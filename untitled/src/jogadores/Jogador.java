@@ -29,9 +29,20 @@ public class Jogador {
         return tabuleiro;
     }
 
-    public int getPedacosRestantesNavios() {
-        return tabuleiro.getPedacosRestantes();
+    public int getNaviosRestantes() {
+        int NaviosRestantes = 0;
+        for (int i = 0; i < frota.length; i++) {
+            Navio navio = frota[i]; // estou guardando o navio da frota numa variavel navio, pra facilitar.
+            if (navio != null) { //existe um navio nessa posição da frota, pode estar afundado ou não.
+             if (!navio.isAfundado()) {
+                NaviosRestantes = NaviosRestantes + 1;
+            }
+            }
+        }
+        return NaviosRestantes;
+
     }
+
 
     public boolean adicionarNavio(Navio navio) {
         if (naviosNaFrota < frota.length) {

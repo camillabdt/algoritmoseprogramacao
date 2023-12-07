@@ -13,10 +13,10 @@ public class Navio {
         this.coordenadasIniciais = coordenadasIniciais;
         this.coordenadasFinais = coordenadasFinais;
         this.tamanho = coordenadasFinais.getX() - coordenadasIniciais.getX() + coordenadasFinais.getY() - coordenadasIniciais.getY() + 1;
-        System.out.println("Novo navio, coordenadas:" +
+        /*System.out.println("Novo navio, coordenadas:" +
                 " (" + coordenadasIniciais.getX() + "," + coordenadasIniciais.getY() + ") à "
                 + " (" + coordenadasFinais.getX() + "," + coordenadasFinais.getY() + ")"
-                + " - Tamanho: " + tamanho);
+                + " - Tamanho: " + tamanho);*/
     }
 
     private int sofrerDano() {
@@ -55,4 +55,13 @@ public class Navio {
     public void setPedacosRestantes(int pedacosRestantes) {
         this.pedacosRestantes = pedacosRestantes;
     }
+
+    public boolean isAfundado() {
+       if (pedacosRestantes ==0){
+           return true;
+       } else {
+           return false;
+       }
+    }
 }
+

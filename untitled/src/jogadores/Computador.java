@@ -24,7 +24,7 @@ public class Computador extends Jogador {
     // Método para ler o arquivo e processar os dados
     public void lerArquivoEProcessar(String nomeArquivo) {
         try (BufferedReader br = new BufferedReader(new FileReader(nomeArquivo))) {
-            // Lê a primeira linha do arquivo para obter a quantidade de termos da sequência de Fibonacci
+            //Lê a primeira linha do arquivo para obter a quantidade de termos da sequência de Fibonacci
             numFibonacci = lerNumFibonacci(br);
             System.out.println("Fibonacci: " + numFibonacci);
 
@@ -86,6 +86,8 @@ public class Computador extends Jogador {
         String linha;
         if ((linha = br.readLine()) != null) {
             numFibonacci = Integer.parseInt(linha);
+
+            // f[0] - 0 / f[1] 1 , para [2] e [n] // f[i]= f[i-1] + f[i-2]
             return numFibonacci;
         } else {
             throw new IllegalArgumentException("A primeira linha do arquivo não contém a quantidade de termos da sequência de Fibonacci.");

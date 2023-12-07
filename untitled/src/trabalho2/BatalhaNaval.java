@@ -17,10 +17,11 @@ public class BatalhaNaval {
 
   private boolean modoAutomatico = false;
 
-    public BatalhaNaval() { // metodo contrutor
+    public BatalhaNaval() { // metodo construtor
         this.computador = new Computador();
         this.humano = new Jogador();
         tamanhosDeNavio = new int[]{2, 3, 5, 7};
+        //TODO:  numero de navios pode ser diferente? Por exemplo, posso ter 5 navios menores que os 4 do PC se no total o numero de peças for o mesmo? - focar no numero de navios do computador
     }
 
     public static void main(String[] args) {
@@ -29,18 +30,19 @@ public class BatalhaNaval {
         int escolha;
 
         // Inicializa o jogador automático (computador)
-       // ((Computador) jogo.computador).lerArquivoEProcessar("computador.txt");
+        ((Computador) jogo.computador).lerArquivoEProcessar("computador.txt");
         // jogo.getComputador().imprimirTabuleiro();
 
         escolha = -1;
-        while (escolha != 1 && escolha !=2) {
+        while
+        (escolha != 1 && escolha !=2) {
             System.out.println("Bem vindo ao Batalha Naval da Bdt!");
                     System.out.println("Escolha o seu modo de jogo:");
             System.out.println("1. Automático");
             System.out.println("2. Manual");
             escolha = scanner.nextInt();
             if (escolha ==1) {
-                jogo.setModoAutomatico(true);
+                jogo.setModoAutomatico(true);// retorna o valor de modoAutomático
             } else if (escolha == 2) {
                 jogo.setModoAutomatico(false);
             } else {
@@ -48,7 +50,8 @@ public class BatalhaNaval {
 
             }
         }
-        // Inicializa o jogador humano
+
+// Inicializa o jogador humano
         jogo.inicializarTabuleiroHumano(jogo.isModoAutomatico());
         // jogo.getHumano().imprimirTabuleiro();
 
@@ -70,8 +73,8 @@ public class BatalhaNaval {
     }
     private void inicializarTabuleiroHumano(boolean modoAutomatico) {
         if (!modoAutomatico) {
-            // TODO: verificação de tamanhos dos navios já inseridos
-            while (humano.getPedacosRestantesNavios() < computador.getPedacosRestantesNavios()) { // enquanto o humano tiver menos peça que o computador, o humano precisa inserir peças
+            while (humano.getNaviosRestantes() < computador.getNaviosRestantes()) { // enquanto o humano tiver menos peça que o computador,
+                // o humano precisa inserir peças
                 humano.imprimirTabuleiro();// perguntar para a brenda se pode mostrar aqui o tabuleiro no
                 // momento de inserir navios
                 try {
@@ -82,23 +85,24 @@ public class BatalhaNaval {
                 }
             }
         } else {
-            while (humano.getPedacosRestantesNavios() < computador.getPedacosRestantesNavios()) {
+            while (humano.getNaviosRestantes() < computador.getNaviosRestantes()) {
                 insereNavioAleatoriamente();
             }
         }
 
     }
 
-    private void insereNavioAleatoriamente() {
+    private void insereNavioAleatoriamente() { //  faz randon e colocar posição inicial e final - usa om mesmo do computador
         Coordenada coordenadasIniciais = coordenadaAleatoria();
         Coordenada coordenadasFinais = getCoordenadaFinalAleatoria(coordenadasIniciais);
         if (!humano.adicionarNavio(new Navio(coordenadasIniciais, coordenadasFinais)) &&
-                humano.getPedacosRestantesNavios() < computador.getPedacosRestantesNavios()) {
+                humano.getNaviosRestantes() < computador.getNaviosRestantes()) {
             throw new IllegalArgumentException("O limite de navios foi atingido mas o computador possui mais navios que o usuário.");
-        } else if (humano.getPedacosRestantesNavios() > computador.getPedacosRestantesNavios()) {
+        } else if (humano.getNaviosRestantes() > computador.getNaviosRestantes()) {
             throw new IllegalArgumentException("O usuário possui mais peças do que o computador.");
         }
     }
+    // quantidade de navios é o numero de linhas entre dois espaços
 
     private Coordenada getCoordenadaFinalAleatoria(Coordenada coordenadasIniciais) {
         Random aleatorio = new Random();
@@ -120,7 +124,6 @@ public class BatalhaNaval {
 
         // Solicita coordenadas finais (@TODO: TRATAR TAMANHO DO NAVIO)
 
-
         boolean valido = false;
         while (!valido) {
             mensagem = "Informe as coordenadas finais do seu navio:";
@@ -129,7 +132,7 @@ public class BatalhaNaval {
 
             int tamanhohorizontal = coordenadasFinais.getX() - coordenadasIniciais.getX();
             int tamanhovertical = coordenadasFinais.getY() - coordenadasIniciais.getY();
-
+// se for diferente de ' ' não coloca. - mensagem de errro e digite novamente
 
             for (int i = 0; i < tamanhosDeNavio.length; i++) ;
             {
@@ -137,12 +140,10 @@ public class BatalhaNaval {
                 } else {
                     System.out.println("O tamanho do navio não corresponde a um tamanho válido");
                 }
-            }
-
-            // checagens
+}           // checagens
             boolean adicionouNavio = humano.adicionarNavio(navio);
-            boolean faltaHumanoAdicionar = humano.getPedacosRestantesNavios() < computador.getPedacosRestantesNavios();
-            boolean adicionouDemais = humano.getPedacosRestantesNavios() > computador.getPedacosRestantesNavios();
+            boolean faltaHumanoAdicionar = humano.getNaviosRestantes() < computador.getNaviosRestantes();
+            boolean adicionouDemais = humano.getNaviosRestantes() > computador.getNaviosRestantes();
 
             if (!adicionouNavio && faltaHumanoAdicionar) {
                 throw new IllegalArgumentException("O limite de navios foi atingido mas o computador possui mais peças que o usuário.");
