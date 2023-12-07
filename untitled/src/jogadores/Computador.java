@@ -81,7 +81,8 @@ public class Computador extends Jogador {
     }
 
     // Lê a primeira linha do arquivo para obter a quantidade de termos da sequência de Fibonacci
-    private int lerNumFibonacci(BufferedReader br) throws IOException {
+  //TODO arrumar parte do fibonnacci -
+     private int lerNumFibonacci(BufferedReader br) throws IOException {
         String linha;
         if ((linha = br.readLine()) != null) {
             numFibonacci = Integer.parseInt(linha);

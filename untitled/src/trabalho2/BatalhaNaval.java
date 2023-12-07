@@ -11,9 +11,11 @@ import java.util.Scanner;
 public class BatalhaNaval {
     Jogador computador;
     Jogador humano;
-
     private int[] tamanhosDeNavio;
-    public static boolean modoAutomatico = false;
+
+
+
+  private boolean modoAutomatico = false;
 
     public BatalhaNaval() { // metodo contrutor
         this.computador = new Computador();
@@ -27,39 +29,48 @@ public class BatalhaNaval {
         int escolha;
 
         // Inicializa o jogador automático (computador)
-        ((Computador) jogo.computador).lerArquivoEProcessar("computador.txt");
+       // ((Computador) jogo.computador).lerArquivoEProcessar("computador.txt");
         // jogo.getComputador().imprimirTabuleiro();
 
-        System.out.println("Escolha o seu modo de jogo:");
-        System.out.println("1. Automático");
-        System.out.println("2. Manual");
-        escolha = scanner.nextInt();
-// tem que colocar o public e void para rolar né
-        if (escolha == 1) {
-            modoAutomatico();
-        } else if (escolha == 2) {
-            Manualmente(scanner);
-        } else {
-            System.out.println("Escolha inválida");
+        escolha = -1;
+        while (escolha != 1 && escolha !=2) {
+            System.out.println("Bem vindo ao Batalha Naval da Bdt!");
+                    System.out.println("Escolha o seu modo de jogo:");
+            System.out.println("1. Automático");
+            System.out.println("2. Manual");
+            escolha = scanner.nextInt();
+            if (escolha ==1) {
+                jogo.setModoAutomatico(true);
+            } else if (escolha == 2) {
+                jogo.setModoAutomatico(false);
+            } else {
+                System.out.println("Escolha inválida");
 
+            }
         }
-
         // Inicializa o jogador humano
-        jogo.inicializarTabuleiroHumano(jogo.modoAutomatico);
+        jogo.inicializarTabuleiroHumano(jogo.isModoAutomatico());
         // jogo.getHumano().imprimirTabuleiro();
 
         // Par ou Impar (decide quem começa)
         int numeroAleatorio = new Random().nextInt(10);
         if (numeroAleatorio % 2 == 0) {
-            jogo.comecaBatalha(jogo.computador, jogo.humano);
+            jogo.comecaBatalha(jogo.getComputador(), jogo.getHumano());
         } else {
-            jogo.comecaBatalha(jogo.humano, jogo.computador);
+            jogo.comecaBatalha(jogo.getHumano(), jogo.getComputador());
         }
     }
 
+    public boolean isModoAutomatico() {
+        return this.modoAutomatico;
+    }
 
+    public void setModoAutomatico(boolean modoAutomatico) {
+        this.modoAutomatico = modoAutomatico;
+    }
     private void inicializarTabuleiroHumano(boolean modoAutomatico) {
         if (!modoAutomatico) {
+            // TODO: verificação de tamanhos dos navios já inseridos
             while (humano.getPedacosRestantesNavios() < computador.getPedacosRestantesNavios()) { // enquanto o humano tiver menos peça que o computador, o humano precisa inserir peças
                 humano.imprimirTabuleiro();// perguntar para a brenda se pode mostrar aqui o tabuleiro no
                 // momento de inserir navios
@@ -211,6 +222,19 @@ public class BatalhaNaval {
     private Jogador getHumano() {
         return this.humano;
     }
+
+    public void setComputador(Jogador computador) {
+        this.computador = computador;
+    }
+
+    public void setHumano(Jogador humano) {
+        this.humano = humano;
+    }
+
+    public int[] getTamanhosDeNavio() {
+        return tamanhosDeNavio;
+    }
+
 
 
 }
