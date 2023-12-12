@@ -22,12 +22,18 @@ public class Tabuleiro {
         }
     }
     public void imprimirTabuleiro() {
+        System.out.print("   ");
         for (int i = 65; i < 85; i++) {
             System.out.print(" " +(char) i + " ");
         }
         System.out.println();
         for (int i = 0; i < tabuleiro.length; i++) {
-            System.out.print(i + 1);
+
+           if (i < 10) {
+               System.out.print( "0" +i + " ");
+           }else {
+               System.out.print(i + " ");
+           }
             for (int j = 0; j < tabuleiro[i].length; j++) {
                 System.out.print("[" + tabuleiro[i][j] + "]");
             }
@@ -66,7 +72,7 @@ public class Tabuleiro {
     public boolean processaTiro(Coordenada coordenada) {
         try {
             if (tabuleiro[coordenada.getX()][coordenada.getY()] == 'N') {
-                Logger.getLogger("Atingido!").info("Um navio foi atingido!");
+                System.err.println(" Um navio foi atingido");
                 tabuleiro[coordenada.getX()][coordenada.getY()] = 'H';
                 pedacosNaviosRestantes = pedacosNaviosRestantes - 1;
                 return true;

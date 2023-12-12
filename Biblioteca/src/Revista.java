@@ -8,10 +8,7 @@ public class Revista extends Material {
         this.dataPublicacao = dataPublicacao;
     }
 
-    // Getters e Setters
-    // ...
 
-    @Override
     public void emprestar() {
         // Implementação para emprestar uma revista
     }

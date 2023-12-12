@@ -94,6 +94,10 @@ public class Computador extends Jogador {
 
 
     public Coordenada proximoTiro() {
-        return tirosComputador[tirosDados++];
+        if (tirosComputador.length > tirosDados +1){
+            return  tirosComputador[tirosDados++];
+        }
+
+        return null;
     }
 }

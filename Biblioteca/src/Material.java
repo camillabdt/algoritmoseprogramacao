@@ -1,6 +1,5 @@
 public abstract class Material {
     protected String titulo;
-    // Outras propriedades comuns podem ser adicionadas aqui
 
     public Material(String titulo) {
         this.titulo = titulo;
