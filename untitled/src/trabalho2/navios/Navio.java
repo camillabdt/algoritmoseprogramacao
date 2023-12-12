@@ -9,11 +9,11 @@ public class Navio {
     int pedacosRestantes;
 
     public Navio(Coordenada coordenadasIniciais, Coordenada coordenadasFinais) {
-        this.pedacosRestantes = tamanho; // quando um navio é criado, o numero de pedaços não atingidos é igual ao seu tamanho
         this.coordenadasIniciais = coordenadasIniciais;
         this.coordenadasFinais = coordenadasFinais;
         this.tamanho = coordenadasFinais.getX() - coordenadasIniciais.getX() + coordenadasFinais.getY() - coordenadasIniciais.getY() + 1;
-        /*System.out.println("Novo navio, coordenadas:" +
+        this.pedacosRestantes = tamanho; // quando um navio é criado, o numero de pedaços não atingidos é igual ao seu tamanho
+/*System.out.println("Novo navio, coordenadas:" +
                 " (" + coordenadasIniciais.getX() + "," + coordenadasIniciais.getY() + ") à "
                 + " (" + coordenadasFinais.getX() + "," + coordenadasFinais.getY() + ")"
                 + " - Tamanho: " + tamanho);*/

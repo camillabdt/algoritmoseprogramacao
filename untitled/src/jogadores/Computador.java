@@ -1,7 +1,6 @@
 package jogadores;
 
 import trabalho2.Coordenada;
-import trabalho2.Tabuleiro;
 import trabalho2.navios.Navio;
 
 import java.io.BufferedReader;
@@ -13,17 +12,17 @@ public class Computador extends Jogador {
 
     private int numFibonacci;
     private int maxTiros;
-    private int tirosDados;
     private Coordenada[] tirosComputador;
 
-    public Computador() {
-        maxTiros = linhas * colunas;
-        tirosDados = 0;
+    public Computador(int[] qtdsMaximaDeNavio) {
+        super(qtdsMaximaDeNavio);
+        maxTiros = linhas * colunas * 3; // assumimos que a quantidade máxima de tiros é três vezes a quantidade de posições disponíveis no tabuleiro
     }
 
     // Método para ler o arquivo e processar os dados
     public void lerArquivoEProcessar(String nomeArquivo) {
         try (BufferedReader br = new BufferedReader(new FileReader(nomeArquivo))) {
+
             //Lê a primeira linha do arquivo para obter a quantidade de termos da sequência de Fibonacci
             numFibonacci = lerNumFibonacci(br);
             System.out.println("Fibonacci: " + numFibonacci);
@@ -33,7 +32,6 @@ public class Computador extends Jogador {
 
             // Lê as coordenadas dos navios enquanto houverem linhas que não estejam vazias (empty)
             frota = lerPosicoesNavios(br);
-
 
             // Posiciona a frota de navios no tabuleiro
             posicionaNavios(frota);

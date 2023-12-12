@@ -21,9 +21,13 @@ public class Tabuleiro {
             }
         }
     }
-
     public void imprimirTabuleiro() {
+        for (int i = 65; i < 85; i++) {
+            System.out.print(" " +(char) i + " ");
+        }
+        System.out.println();
         for (int i = 0; i < tabuleiro.length; i++) {
+            System.out.print(i + 1);
             for (int j = 0; j < tabuleiro[i].length; j++) {
                 System.out.print("[" + tabuleiro[i][j] + "]");
             }
@@ -77,7 +81,7 @@ public class Tabuleiro {
                 throw new IllegalArgumentException("O tabuleiro possui valores inesperados. Por favor, verifique o arquivo de configuração e reinicie o jogo.");
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Um tiro foi dado em uma posição inválida: "+coordenada.getString());
+            System.out.println("Um tiro foi dado em uma posição inválida: " + coordenada.getString());
             return false;
         }
     }
@@ -95,11 +99,39 @@ public class Tabuleiro {
         if (this.pedacosNaviosRestantes > 0) {
             return true;
         }
-       // System.out.println("Temos um vencedor!");
+        // System.out.println("Temos um vencedor!");
         return false;
     }
 
     public int getPedacosRestantes() {
         return this.pedacosNaviosRestantes;
+    }
+
+    public boolean isCoordenadaDisponivel(Coordenada coordenada) {
+        if (isCoordenadaNoTabuleiro(coordenada)) {
+            if (tabuleiro[coordenada.getX()][coordenada.getY()] == ' ') {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            System.out.println("Essa coordenada não está no tabuleiro");
+            return false;
+        }
+    }
+
+    public boolean isCoordenadaNoTabuleiro(Coordenada coordenada) {
+        boolean xValido = false;
+        boolean yValido = false;
+
+        if (coordenada.getX() >= 0 && coordenada.getX() < tabuleiro.length) { // verifica o numero de linhas
+            xValido = true;
+        }
+
+        if (coordenada.getY() >= 0 && coordenada.getY() < tabuleiro[0].length) { // verifica o numero de coluna
+            yValido = true;
+        }
+
+        return xValido && yValido; // isso evita um if, Ela retorna verdadeiro se os dois forem true.
     }
 }
