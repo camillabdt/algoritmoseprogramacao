@@ -75,17 +75,21 @@ public class Jogador {
         tabuleiro.imprimirTabuleiro();
     }
 
-    public void posicionaNavios(Navio[] frota) {
+    public void posicionaNavios(Navio[] frota) { // posiciona frota de navios
         // Para cada um dos navios da frota
         for (int indiceNavio = 0; indiceNavio < frota.length; indiceNavio++) {
             Navio navio = frota[indiceNavio];
-            posicionaNavio(navio);
+            if (navio != null) {
+                posicionaNavio(navio);
+                // serve para o computador (txt)
+            }
         }
     }
 
-    private void posicionaNavio(Navio navio) {
+    private void posicionaNavio(Navio navio) { // posiciona navio por navio
         if (navio == null) {
             System.out.println("Erro ao posicionar o navio: O navio está nulo!");
+            // serve para dar msg de erro.
             return;
         }
         if (navio.getCoordenadasIniciais().getX() == navio.getCoordenadasFinais().getX()) {

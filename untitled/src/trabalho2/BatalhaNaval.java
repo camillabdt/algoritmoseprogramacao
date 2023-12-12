@@ -20,7 +20,7 @@ public class BatalhaNaval {
 
     public BatalhaNaval() { // metodo construtor
         tamanhosDeNavio = new int[]{2, 3, 5, 7};
-        qtdsMaximaDeNavio = new int[]{0, 0, 1, 2, 0, 1, 1};
+        qtdsMaximaDeNavio = new int[]{0, 0, 1, 2, 0, 1, 0, 1};
         this.computador = new Computador(qtdsMaximaDeNavio);
         this.humano = new Jogador(qtdsMaximaDeNavio);
 
@@ -200,9 +200,14 @@ public class BatalhaNaval {
 
     private void comecaBatalha(Jogador atirador, Jogador alvo) {
         Coordenada coordenadaTiro;
+        int rodada = 0;
+
         while (atirador.getTabuleiro().restamNavios() && alvo.getTabuleiro().restamNavios()) {
+            System.out.print(" ## RODADA " + (++rodada));
+
             // Identifica quem atira e localiza as coordenadas
             if (atirador instanceof Computador) {
+                System.out.println(" (computador) ");
                 coordenadaTiro = ((Computador) atirador).proximoTiro();
 
                 // se acabar as coordenadas de tiros do computador no arquivo, sorteia uma nova coordenada
@@ -210,6 +215,7 @@ public class BatalhaNaval {
                     coordenadaTiro = coordenadaAleatoria();
                 }
             } else {
+                System.out.println(" (Você)");
                 if (modoAutomatico) {
                     coordenadaTiro = coordenadaAleatoria();
                     System.out.println("Tiro em: "+coordenadaTiro.getX()+","+coordenadaTiro.getY());
@@ -225,6 +231,8 @@ public class BatalhaNaval {
                 Jogador aux = atirador; // variavel auxiliar para guardar temporariamente o atirador
                 atirador = alvo;
                 alvo = aux;
+            } else {
+                rodada--;
             }
         }
         System.out.println("Fim de jogo! ");
