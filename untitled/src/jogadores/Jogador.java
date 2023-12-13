@@ -4,7 +4,10 @@ import trabalho2.Coordenada;
 import trabalho2.Tabuleiro;
 import trabalho2.navios.Navio;
 
+import java.util.Random;
+
 public class Jogador {
+
     private int[] tamanhosDeNaviosDisponiveis;
     public Navio[] frota;
     private int naviosNaFrota;
@@ -21,7 +24,7 @@ public class Jogador {
         this.colunas = 20;
         this.naviosNaFrota = 0;
         this.tirosDados = 0;
-        this.tabuleiro = new Tabuleiro(linhas, colunas);
+        this.tabuleiro = new Tabuleiro(colunas, linhas);
         this.tamanhosDeNaviosDisponiveis = qtdsMaximaDeNavio;
     }
 
@@ -43,7 +46,7 @@ public class Jogador {
         return tabuleiro;
     }
 
-    public int getnaviosRestantes() {
+    public int getNaviosRestantes() {
         int naviosRestantes = 0;
         for (int i = 0; i < frota.length; i++) {
             Navio navio = frota[i]; // estou guardando o navio da frota numa variavel navio, pra facilitar.
@@ -71,7 +74,6 @@ public class Jogador {
     }
 
     public void imprimirTabuleiro() {
-        System.out.println("########### Tabuleiro: ");
         tabuleiro.imprimirTabuleiro();
     }
 
@@ -80,34 +82,36 @@ public class Jogador {
         for (int indiceNavio = 0; indiceNavio < frota.length; indiceNavio++) {
             Navio navio = frota[indiceNavio];
             if (navio != null) {
-                posicionaNavio(navio);
                 // serve para o computador (txt)
+                posicionaNavio(navio);
             }
         }
     }
 
     private void posicionaNavio(Navio navio) { // posiciona navio por navio
         if (navio == null) {
-            System.out.println("Erro ao posicionar o navio: O navio está nulo!");
+            System.err.println("Erro ao posicionar o navio: O navio está nulo!");
             // serve para dar msg de erro.
             return;
         }
-        if (navio.getCoordenadasIniciais().getX() == navio.getCoordenadasFinais().getX()) {
-            int x = navio.getCoordenadasIniciais().getX();
+        if (navio.getCoordenadasIniciais().getColuna() == navio.getCoordenadasFinais().getColuna()) {
+            int coluna = navio.getCoordenadasIniciais().getColuna();
             // Navio na horizontal
-            for (int y = navio.getCoordenadasIniciais().getY(); y <= navio.getCoordenadasFinais().getY(); y++) {
+            for (int linha = navio.getCoordenadasIniciais().getLinha(); linha <= navio.getCoordenadasFinais().getLinha(); linha++) {
                 // Verifica se os índices estão dentro dos limites da matriz
-                if (x < tabuleiro.getTabuleiro().length && y < tabuleiro.getTabuleiro().length) {
-                    tabuleiro.adicionaPedacoNavio(x, y);
+                if (coluna < tabuleiro.getTabuleiro().length && linha < tabuleiro.getTabuleiro().length) {
+                    tabuleiro.adicionaPedacoNavio(coluna, linha);
                 }
             }
-        } else if (navio.getCoordenadasIniciais().getY() == navio.getCoordenadasFinais().getY()) {
-            int y = navio.getCoordenadasIniciais().getY();
+        } else if (navio.getCoordenadasIniciais().getLinha() == navio.getCoordenadasFinais().getLinha()) {
+            int linha = navio.getCoordenadasIniciais().getLinha();
             // Navio na vertical
-            for (int x = navio.getCoordenadasIniciais().getX(); x <= navio.getCoordenadasFinais().getX(); x++) {
+            for (int coluna = navio.getCoordenadasIniciais().getColuna(); coluna <= navio.getCoordenadasFinais().getColuna(); coluna++) {
                 // Verifica se os índices estão dentro dos limites da matriz
-                if (x < tabuleiro.getTabuleiro().length && y < tabuleiro.getTabuleiro().length) {
-                    tabuleiro.adicionaPedacoNavio(x, y);
+                if (coluna < tabuleiro.getTabuleiro().length && linha < tabuleiro.getTabuleiro()[0].length) {
+                    tabuleiro.adicionaPedacoNavio(coluna, linha);
+                } else {
+                    System.err.println("Coordenadas fora dos limites do tabuleiro: (linha:" + linha + ", coluna:" + coluna + ")");
                 }
             }
         } else {
@@ -117,6 +121,40 @@ public class Jogador {
 
     public int getTirosDados() {
         return tirosDados;
+    }
+
+    public void printTamanhosDeNaviosDisponiveis() {
+        System.out.println("Os navios disponíveis e seus tamanhos são os seguintes:");
+
+        for (int i = 0; i < tamanhosDeNaviosDisponiveis.length; i++) {
+            if (tamanhosDeNaviosDisponiveis[i] != 0) {
+                System.out.println("Navios de tamanho [" + i + "] disponíveis: " + tamanhosDeNaviosDisponiveis[i]);
+            }
+        }
+    }
+
+    public int getProximoTamanhoNavioDisponivel() { // retorna um navio de tamanho valido
+
+        // para garantir que tanto navio de tamanho menor quanto de tamanho maior seja sorteado, é tirado o par ou impar a seguir
+        Random parImpar = new Random();
+
+        if (parImpar.nextInt() % 2 == 0) { // se o numero aleatorio for par, percorre do inicio ao fim
+            for (int i = 0; i < tamanhosDeNaviosDisponiveis.length; i++) {
+                if (tamanhosDeNaviosDisponiveis[i] != 0) {
+                    return i;
+                }
+            }
+            // se o numero aleatorio for impar, percorre do fim para o inicio
+        } else {
+            for (int i = tamanhosDeNaviosDisponiveis.length - 1; i >= 0; i--) {
+                if (tamanhosDeNaviosDisponiveis[i] != 0) {
+                    return i;
+                }
+            }
+        }
+
+
+        return 0;
     }
 
     public void setTirosDados(int tirosDados) {

@@ -11,7 +11,7 @@ public class Navio {
     public Navio(Coordenada coordenadasIniciais, Coordenada coordenadasFinais) {
         this.coordenadasIniciais = coordenadasIniciais;
         this.coordenadasFinais = coordenadasFinais;
-        this.tamanho = coordenadasFinais.getX() - coordenadasIniciais.getX() + coordenadasFinais.getY() - coordenadasIniciais.getY() + 1;
+        this.tamanho = coordenadasFinais.getColuna() - coordenadasIniciais.getColuna() + coordenadasFinais.getLinha() - coordenadasIniciais.getLinha() + 1;
         this.pedacosRestantes = tamanho; // quando um navio é criado, o numero de pedaços não atingidos é igual ao seu tamanho
 /*System.out.println("Novo navio, coordenadas:" +
                 " (" + coordenadasIniciais.getX() + "," + coordenadasIniciais.getY() + ") à "

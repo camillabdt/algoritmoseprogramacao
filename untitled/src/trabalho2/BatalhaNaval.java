@@ -27,26 +27,47 @@ public class BatalhaNaval {
     }
 
     public static void main(String[] args) {
-        BatalhaNaval jogo = new BatalhaNaval();
+
+        String escolha = "S";
+        while (escolha.equals("S")) {
+            System.out.println("Bem vindo ao Batalha Naval da Bdt!");
+
+            // Inicia um novo jogo
+            BatalhaNaval jogo = new BatalhaNaval();
+            jogo.inicializarJogo();
+            System.out.println("Deseja jogar novamente? Tecle (S) para sim, ou qualquer tecla para sair.");
+            escolha = new Scanner(System.in).nextLine();
+        }
+    }
+
+    private void inicializarJogo() {
         Scanner scanner = new Scanner(System.in);
         int escolha;
 
         // Inicializa o jogador automático (computador)
-        ((Computador) jogo.computador).lerArquivoEProcessar("computador.txt");
-        // jogo.getComputador().imprimirTabuleiro();
+        String arquivo = "computador.txt";
+        boolean leitura = false;
+        while (!leitura) {
+            leitura = ((Computador) computador).lerArquivoEProcessar(arquivo);
+            if (!leitura) {
+                System.out.println("Por favor, informe o nome do arquivo novamente:");
+                arquivo = new Scanner(System.in).nextLine();
+            }
+        }
+//        getComputador().imprimirTabuleiro();
+
 
         escolha = -1;
         while (escolha != 1 && escolha != 2) {
-            System.out.println("Bem vindo ao Batalha Naval da Bdt!");
             System.out.println("Escolha o seu modo de jogo:");
             System.out.println("1. Automático");
             System.out.println("2. Manual");
             try {
                 escolha = scanner.nextInt();
                 if (escolha == 1) {
-                    jogo.setModoAutomatico(true);// retorna o valor de modoAutomático
+                    setModoAutomatico(true);// retorna o valor de modoAutomático
                 } else if (escolha == 2) {
-                    jogo.setModoAutomatico(false);
+                    setModoAutomatico(false);
                 } else {
                     throw new IllegalArgumentException("O número digitado é inválido, por favor, digite apenas o número 1 ou 2.");
                 }
@@ -59,7 +80,8 @@ public class BatalhaNaval {
         }
 
         // Inicializa o jogador humano
-        jogo.inicializarTabuleiroHumano(jogo.isModoAutomatico());
+        inicializarTabuleiroHumano(isModoAutomatico());
+
         // jogo.getHumano().imprimirTabuleiro();
 
         // Par ou Impar (decide quem começa)
@@ -68,10 +90,10 @@ public class BatalhaNaval {
 
         if (numeroAleatorio % 2 == 0) {
             System.out.println("O dado mostrou o número: " + numeroAleatorio + ", então o COMPUTADOR começa!");
-            jogo.comecaBatalha(jogo.getComputador(), jogo.getHumano());
+            comecaBatalha(getComputador(), getHumano());
         } else {
             System.out.println("O dado mostrou o número: " + numeroAleatorio + ", então VOCÊ começa!");
-            jogo.comecaBatalha(jogo.getHumano(), jogo.getComputador());
+            comecaBatalha(getHumano(), getComputador());
         }
     }
 
@@ -85,9 +107,8 @@ public class BatalhaNaval {
 
     private void inicializarTabuleiroHumano(boolean modoAutomatico) {
         if (!modoAutomatico) {
-            while (humano.getnaviosRestantes() < computador.getnaviosRestantes()) { // enquanto o humano tiver menos peça que o computador,
-                // o humano precisa inserir peças
-                humano.imprimirTabuleiro();// perguntar para a brenda se pode mostrar aqui o tabuleiro no
+            while (humano.getNaviosRestantes() < computador.getNaviosRestantes()) { // enquanto o humano tiver menos peça que o computador,
+//                humano.imprimirTabuleiro();// perguntar para a brenda se pode mostrar aqui o tabuleiro no
                 // momento de inserir navios
                 try {
                     insereNavioManualmente();
@@ -96,35 +117,28 @@ public class BatalhaNaval {
                     System.out.println("Aconteceu o seguinte erro: " + mensagemDeErro);
                 }
             }
-        } else {
-            while (humano.getnaviosRestantes() < computador.getnaviosRestantes()) {
-                insereNavioAleatoriamente();
+        } else { // modo automatico, sorteia as posições de navios
+            while (humano.getNaviosRestantes() < computador.getNaviosRestantes()) {
+                insereNavioAutomaticamente();
             }
+            humano.imprimirTabuleiro();
         }
 
     }
 
-    private void insereNavioAleatoriamente() { //  faz randon e colocar posição inicial e final - usa om mesmo do computador
-        Coordenada coordenadasIniciais = coordenadaAleatoria();
-        Coordenada coordenadasFinais = getCoordenadaFinalAleatoria(coordenadasIniciais);
-        if (!humano.adicionarNavio(new Navio(coordenadasIniciais, coordenadasFinais)) && humano.getnaviosRestantes() < computador.getnaviosRestantes()) {
-            throw new IllegalArgumentException("O limite de navios foi atingido mas o computador possui mais navios que o usuário.");
-        } else if (humano.getnaviosRestantes() > computador.getnaviosRestantes()) {
-            throw new IllegalArgumentException("O usuário possui mais peças do que o computador.");
-        }
-    }
-    // quantidade de navios é o numero de linhas entre dois espaços
-
-    private Coordenada getCoordenadaFinalAleatoria(Coordenada coordenadasIniciais) {
+    private Coordenada getCoordenadaFinalAleatoria(Coordenada coordenadasIniciais, int tamanhoNavio) {
         Random aleatorio = new Random();
         boolean horizontal = (aleatorio.nextInt() % 2 == 0); // se o numero aleatorio for par, então é horizontal
-        int tamanhoNavio = aleatorio.nextInt(tamanhosDeNavio.length - 1);
+        // esse método retorna o próximo navio, mas varia se começa do inico ou do fim da lista de navios
         Coordenada coordenadasFinais;
         if (horizontal) {
-            coordenadasFinais = new Coordenada(coordenadasIniciais.getX(), coordenadasIniciais.getY() + tamanhoNavio);
+            coordenadasFinais = new Coordenada(coordenadasIniciais.getColuna(), coordenadasIniciais.getLinha() + tamanhoNavio - 1);
         } else {
-            coordenadasFinais = new Coordenada(coordenadasIniciais.getX() + tamanhoNavio, coordenadasIniciais.getY());
+            coordenadasFinais = new Coordenada(coordenadasIniciais.getColuna() + tamanhoNavio - 1, coordenadasIniciais.getLinha());
         }
+        System.out.println(coordenadasIniciais.getString());
+        System.out.println(coordenadasFinais.getString());
+
         return coordenadasFinais;
     }
 
@@ -138,7 +152,7 @@ public class BatalhaNaval {
             if (coordenadasIniciais != null) {
                 coordenadaInicialDisponivel = humano.getTabuleiro().isCoordenadaDisponivel(coordenadasIniciais);
                 if (!coordenadaInicialDisponivel) {
-                    System.out.println("Essa coordenada não está disponivel");
+                    System.err.println("Informe uma coordenada que esteja disponível, dentro do tabuleiro e sem navios.");
                 }
             } else {
                 System.out.println("Coordenadas inválidas.");
@@ -163,8 +177,8 @@ public class BatalhaNaval {
 
                         // Verifica se a quantidade de navios está consistente
                         boolean adicionouNavio = humano.adicionarNavio(navio);
-                        boolean faltaHumanoAdicionar = humano.getnaviosRestantes() < computador.getnaviosRestantes();
-                        boolean adicionouDemais = humano.getnaviosRestantes() > computador.getnaviosRestantes();
+                        boolean faltaHumanoAdicionar = humano.getNaviosRestantes() < computador.getNaviosRestantes();
+                        boolean adicionouDemais = humano.getNaviosRestantes() > computador.getNaviosRestantes();
 
                         if (!adicionouNavio && faltaHumanoAdicionar) {
                             throw new IllegalArgumentException("O limite de navios foi atingido mas o computador possui mais navios que o usuário.");
@@ -172,7 +186,7 @@ public class BatalhaNaval {
                             throw new IllegalArgumentException("O usuário possui mais navios do que o computador.");
                         }
                     } else {
-                        System.out.println("O tamanho do navio não corresponde a um tamanho válido."); // solicitara novamente a coordenada final
+                        System.err.println("O tamanho do navio não corresponde a um tamanho válido."); // solicitara novamente a coordenada final
                     }
                 } else {
                     System.out.println("A coordenada final já está ocupada ou é inválida."); // solicitara novamente a coordenada final
@@ -180,69 +194,172 @@ public class BatalhaNaval {
             }
         }
     }
+//    private void insereNavioAleatoriamente() { //  faz randon e colocar posição inicial e final - usa om mesmo do computador
+//        Coordenada coordenadasIniciais = coordenadaAleatoria();
+//        Coordenada coordenadasFinais = getCoordenadaFinalAleatoria(coordenadasIniciais);
+//        if (!humano.adicionarNavio(new Navio(coordenadasIniciais, coordenadasFinais)) && humano.getNaviosRestantes() < computador.getNaviosRestantes()) {
+//            throw new IllegalArgumentException("O limite de navios foi atingido mas o computador possui mais navios que o usuário.");
+//        } else if (humano.getNaviosRestantes() > computador.getNaviosRestantes()) {
+//            throw new IllegalArgumentException("O usuário possui mais peças do que o computador.");
+//        }
+//    }
+
+    public void insereNavioAutomaticamente() {
+        System.out.println("Metodo de inserir automaticamente...");
+        // Solicita coordenadas iniciais
+        boolean coordenadaInicialDisponivel = false;
+        Coordenada coordenadasIniciais = null;
+        int tamanhoNavio = getHumano().getProximoTamanhoNavioDisponivel();
+        System.out.println("Tamanho de navio:");
+
+        while (!coordenadaInicialDisponivel) {
+            coordenadasIniciais = coordenadaAleatoria();
+            boolean cabeHorizontal = coordenadasIniciais.getColuna() + tamanhoNavio < humano.getTabuleiro().getTabuleiro().length;
+            boolean cabeVertical = coordenadasIniciais.getColuna() + tamanhoNavio < humano.getTabuleiro().getTabuleiro()[0].length;
+            if (cabeHorizontal || cabeVertical) { // esse if garante que o navio cabe no tabuleiro em pelo menos um sentido a partir da coordenada inicial escolhida
+                if (coordenadasIniciais != null) {
+                    coordenadaInicialDisponivel = humano.getTabuleiro().isCoordenadaDisponivel(coordenadasIniciais);
+                    if (!coordenadaInicialDisponivel) {
+                        System.err.println("Informe uma coordenada que esteja disponível, dentro do tabuleiro e sem navios.");
+                    }
+                } else {
+                    System.out.println("Coordenadas inválidas.");
+                }
+            }
+        }
+
+        boolean coorodenadaFinalDisponivel = false;
+        while (!coorodenadaFinalDisponivel) {
+            Coordenada coordenadasFinais = getCoordenadaFinalAleatoria(coordenadasIniciais, tamanhoNavio);
+
+            if (coordenadasFinais != null) {
+
+                // Verifica se a posição da coordenada está disponível
+                coorodenadaFinalDisponivel = humano.getTabuleiro().isCoordenadaDisponivel(coordenadasFinais);
+                if (coorodenadaFinalDisponivel) {
+
+                    Navio navio = new Navio(coordenadasIniciais, coordenadasFinais);
+                    boolean tamanhoValido = isTamanhoNavioValido(navio, humano); // Verifica se o navio tem um tamanho válido
+
+                    if (tamanhoValido) {
+
+                        // Verifica se a quantidade de navios está consistente
+                        boolean adicionouNavio = humano.adicionarNavio(navio);
+                        boolean faltaHumanoAdicionar = humano.getNaviosRestantes() < computador.getNaviosRestantes();
+                        boolean adicionouDemais = humano.getNaviosRestantes() > computador.getNaviosRestantes();
+
+                        if (!adicionouNavio && faltaHumanoAdicionar) {
+                            throw new IllegalArgumentException("O limite de navios foi atingido mas o computador possui mais navios que o usuário.");
+                        } else if (adicionouDemais) {
+                            throw new IllegalArgumentException("O usuário possui mais navios do que o computador.");
+                        }
+                    } else {
+                        System.err.println("O tamanho do navio não corresponde a um tamanho válido."); // solicitara novamente a coordenada final
+                    }
+                } else {
+                    System.out.println("A coordenada final já está ocupada ou é inválida."); // solicitara novamente a coordenada final
+                    System.exit(0);
+                }
+            }
+        }
+    }
 
     private boolean isTamanhoNavioValido(Navio navio, Jogador jogador) {
-        int tamanhohorizontal = navio.getCoordenadasFinais().getX() - navio.getCoordenadasIniciais().getX() + 1;
-        int tamanhovertical = navio.getCoordenadasFinais().getY() - navio.getCoordenadasIniciais().getY() + 1;
+        int tamanhohorizontal = navio.getCoordenadasFinais().getColuna() - navio.getCoordenadasIniciais().getColuna() + 1;
+        int tamanhovertical = navio.getCoordenadasFinais().getLinha() - navio.getCoordenadasIniciais().getLinha() + 1;
         for (int i = 0; i < tamanhosDeNavio.length; i++) {
             if (tamanhosDeNavio[i] == tamanhovertical || tamanhosDeNavio[i] == tamanhohorizontal) {
-                int tamanho =Math.abs(tamanhohorizontal - tamanhovertical)+1; // abs retorna o modulo (sem sinal)
+                int tamanho = Math.abs(tamanhohorizontal - tamanhovertical) + 1; // abs retorna o modulo (sem sinal)
                 if (jogador.isTamanhoDisponivel(tamanho)) {
                     return true; // o tamanho vertical ou horizontal tem um tamanho válido!
                 }
 
             }
         }
-        System.out.println("O navio tem tamanho INVÁLIDO: " + tamanhohorizontal + "x" + tamanhovertical);
+        System.err.println("O navio tem tamanho INVÁLIDO: " + tamanhohorizontal + "x" + tamanhovertical);
+        jogador.printTamanhosDeNaviosDisponiveis();
         return false; // se percorrer o vetor de tamanhos e nao encontrar um tamanho valido, retorna false
     }
 
 
     private void comecaBatalha(Jogador atirador, Jogador alvo) {
-        Coordenada coordenadaTiro;
+        Coordenada coordenadaTiro = null;
         int rodada = 0;
 
         while (atirador.getTabuleiro().restamNavios() && alvo.getTabuleiro().restamNavios()) {
             System.out.print(" ## RODADA " + (++rodada));
-
-            // Identifica quem atira e localiza as coordenadas
-            if (atirador instanceof Computador) {
-                System.out.println(" (computador) ");
-                coordenadaTiro = ((Computador) atirador).proximoTiro();
-
-                // se acabar as coordenadas de tiros do computador no arquivo, sorteia uma nova coordenada
-                if (coordenadaTiro == null){
-                    coordenadaTiro = coordenadaAleatoria();
-                }
-            } else {
-                System.out.println(" (Você)");
-                if (modoAutomatico) {
-                    coordenadaTiro = coordenadaAleatoria();
-                    System.out.println("Tiro em: "+coordenadaTiro.getX()+","+coordenadaTiro.getY());
-                } else {
-                    coordenadaTiro = tiroManual(atirador);
-                }
+            // se o numero da rodada tiver dentro do vetor fibonacci - deixa jogar mais duas vezes
+            int tiros = 1;
+            Coordenada[] filaDeTiros = new Coordenada[tiros];
+            if (estaNaSequenciaFibonnacio(rodada)) {
+                tiros = 3;
+                filaDeTiros = new Coordenada[tiros];
             }
 
-            // Dispara o tiro
-            boolean repetido = atirador.atirar(alvo, coordenadaTiro);
-            if (!repetido) {
-                // se a coordenada não for repetida inverte o alvo e o atirador para a próxima rodada
-                Jogador aux = atirador; // variavel auxiliar para guardar temporariamente o atirador
-                atirador = alvo;
-                alvo = aux;
-            } else {
-                rodada--;
+            // Identifica quem atira e localiza as coordenadas
+            for (int tiro = 0; tiro < filaDeTiros.length; tiro++) {
+                if (atirador instanceof Computador) {
+                    System.out.println(" (computador) ");
+                    coordenadaTiro = ((Computador) atirador).proximoTiro();
+
+                    // se acabar as coordenadas de tiros do computador no arquivo, sorteia uma nova coordenada
+                    if (coordenadaTiro == null) {
+                        coordenadaTiro = coordenadaAleatoria();
+                    }
+                } else {
+                    System.out.println(" (Você)");
+                    if (modoAutomatico) {
+                        coordenadaTiro = coordenadaAleatoria();
+                        System.out.println("Tiro em: " + coordenadaTiro.getColuna() + "," + coordenadaTiro.getLinha());
+                        // Descomentar a linha a seguir para acompanhar o progresso (ver os M onde tem tiro no tabuleiro)
+//                    getComputador().imprimirTabuleiro();
+
+                    } else {
+                        coordenadaTiro = tiroManual(atirador);
+                    }
+                }
+                filaDeTiros[tiro] = coordenadaTiro;
+            }
+
+            for (int tiro = 0; tiro < filaDeTiros.length; tiro++) {
+                // Dispara o tiro
+                boolean repetido = atirador.atirar(alvo, coordenadaTiro);
+                if (!repetido) {
+                    // se a coordenada não for repetida inverte o alvo e o atirador para a próxima rodada
+                    Jogador aux = atirador; // variavel auxiliar para guardar temporariamente o atirador
+                    atirador = alvo;
+                    alvo = aux;
+                } else {
+                    rodada--;
+                }
             }
         }
         System.out.println("Fim de jogo! ");
-        if (atirador.getTabuleiro().restamNavios()) {
-            if (atirador instanceof Computador) {
-                System.out.println("Você perdeu!");
+        if (alvo.getTabuleiro().
+
+                restamNavios()) {
+            if (alvo instanceof Computador) {
+                mensagemVermelha("Você perdeu!");
             } else {
-                System.out.println("Parabéns, você ganhou!");
+                mensagemVermelha("Parabéns, você ganhou!");
             }
         }
+        System.out.println("######### TABULEIRO DO COMPUTADOR:");
+        computador.imprimirTabuleiro();// perguntar para a brenda se pode mostrar aqui o tabuleiro no
+
+        System.out.println("######### SEU TABULEIRO");
+        humano.imprimirTabuleiro();// perguntar para a brenda se pode mostrar aqui o tabuleiro no
+
+    }
+
+    private boolean estaNaSequenciaFibonnacio(int rodada) {
+        int[] sequenciaFB = getComputador().getSequenciaFb();
+        for (int i = 0; i < sequenciaFB.length; i++) {
+            if (sequenciaFB[i] == rodada) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Coordenada tiroManual(Jogador atirador) {
@@ -261,10 +378,10 @@ public class BatalhaNaval {
                     return coordenadaInformada;
                 }
             } catch (Exception e) {
-                System.out.println("Aconteceu um erro ao processar a coordenada: " + e.getLocalizedMessage() + ". Por favor, use o padrão 'L#', onde L é a letra da linha (A a T) e N é o número da coluna de 1 a " + computador.getTabuleiro().getTabuleiro()[1].length);
+                System.err.println("Aconteceu um erro ao processar a coordenada: " + e.getLocalizedMessage() + ". Por favor, use o padrão 'L#', onde L é a letra da linha (A a T) e N é o número da coluna de 1 a " + computador.getTabuleiro().getTabuleiro()[1].length);
             }
             if (!valido) {
-                System.out.println("Use o padrão 'L#', onde L é a letra da linha (A a T) e N é o número da coluna de 0 a " + computador.getTabuleiro().getTabuleiro()[1].length);
+                System.err.println("Use o padrão 'L#', onde L é a letra da linha (A a T) e N é o número da coluna de 0 a " + computador.getTabuleiro().getTabuleiro()[1].length);
             }
         }
         return null;
@@ -272,9 +389,9 @@ public class BatalhaNaval {
 
     private Coordenada coordenadaAleatoria() {
         Coordenada aleatoria;
-        int x = new Random().nextInt(computador.getTabuleiro().getTabuleiro().length - 1);
-        int y = new Random().nextInt(computador.getTabuleiro().getTabuleiro()[0].length - 1);
-        aleatoria = new Coordenada(x, y);
+        int coluna = new Random().nextInt(computador.getTabuleiro().getTabuleiro().length);
+        int linha = new Random().nextInt(computador.getTabuleiro().getTabuleiro()[0].length);
+        aleatoria = new Coordenada(coluna, linha);
         return aleatoria;
     }
 
@@ -296,6 +413,12 @@ public class BatalhaNaval {
 
     public int[] getTamanhosDeNavio() {
         return tamanhosDeNavio;
+    }
+
+    private void mensagemVermelha(String mensagem) {
+        String ANSI_RED = "\u001B[31m";
+        String ANSI_RESET = "\u001B[0m";
+        System.out.println(ANSI_RED + mensagem + ANSI_RESET);
     }
 
 

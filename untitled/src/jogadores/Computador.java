@@ -13,6 +13,7 @@ public class Computador extends Jogador {
     private int numFibonacci;
     private int maxTiros;
     private Coordenada[] tirosComputador;
+    private int[] sequenciaFibonacci;
 
     public Computador(int[] qtdsMaximaDeNavio) {
         super(qtdsMaximaDeNavio);
@@ -20,12 +21,15 @@ public class Computador extends Jogador {
     }
 
     // Método para ler o arquivo e processar os dados
-    public void lerArquivoEProcessar(String nomeArquivo) {
+    public boolean lerArquivoEProcessar(String nomeArquivo) {
         try (BufferedReader br = new BufferedReader(new FileReader(nomeArquivo))) {
 
             //Lê a primeira linha do arquivo para obter a quantidade de termos da sequência de Fibonacci
             numFibonacci = lerNumFibonacci(br);
+
             System.out.println("Fibonacci: " + numFibonacci);
+            sequenciaFibonacci = fibonacci(numFibonacci);
+            imprimeVetorFibonacci(sequenciaFibonacci);
 
             // Pula a linha em branco
             br.readLine();
@@ -40,11 +44,22 @@ public class Computador extends Jogador {
             tirosComputador = lerPosicoesTiros(br, maxTiros);
 
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            System.err.println("O arquivo informado não existe.");
+            return false;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.err.println("Ocorreu um problema ao ler o arquivo.");
+            return false;
         }
+        return true;
     }
+
+    private void imprimeVetorFibonacci(int[] sequenciaFibonacci) {
+        for (int i = 0; i < sequenciaFibonacci.length; i++) {
+            System.out.print(sequenciaFibonacci[i] + " ");
+        }
+        System.out.println(); // Pula uma linha após imprimir a sequência
+    }
+
 
 
     // Lê as coordenadas dos tiros
@@ -99,5 +114,27 @@ public class Computador extends Jogador {
         }
 
         return null;
+    }
+
+    public static int[] fibonacci(int N) {
+        if (N <= 0) {
+            return new int[0]; // se N for menor ou igual a 0, retorna vazio e nem calcula a sequencia...
+        }
+
+        int[] vetorFibonacci = new int[N]; // inicializa o vetor com o numero de posições igual a N
+        vetorFibonacci[0] = 1; // a primeira posição é sempre 1
+
+        if (N > 1) { // se tiver mais do que uma posição (N maior que 1)
+            vetorFibonacci[1] = 1; // a segunda posição da sequencia vai ser sempre 1 também
+            for (int i = 2; i < N; i++) {
+                // formula do da sequencia de fibonacci (o valor da sequencia é sempre a soma dos dois numeros anteriores, ou seja, que estao nas duas posições do vetor que precedem a posiçao atual chamdada de i)
+                vetorFibonacci[i] = vetorFibonacci[i - 1] + vetorFibonacci[i - 2];
+            }
+        }
+        return vetorFibonacci;
+    }
+
+    public int[] getSequenciaFb() {
+        return sequenciaFibonacci;
     }
 }
