@@ -294,6 +294,7 @@ public class BatalhaNaval {
             if (estaNaSequenciaFibonnacio(rodada)) {
                 tiros = 3;
                 filaDeTiros = new Coordenada[tiros];
+                System.out.println(" Você está na sequencia de fibonacci, terá a chance de jogar 3x");
             }
 
             // Identifica quem atira e localiza as coordenadas
