@@ -299,6 +299,7 @@ public class BatalhaNaval {
 
             // Identifica quem atira e localiza as coordenadas
             for (int tiro = 0; tiro < filaDeTiros.length; tiro++) {
+                System.out.println("Bônus - Tentativa "+tiro);
                 if (atirador instanceof Computador) {
                     System.out.println(" (computador) ");
                     coordenadaTiro = ((Computador) atirador).proximoTiro();
